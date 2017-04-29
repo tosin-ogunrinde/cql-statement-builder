@@ -102,7 +102,7 @@ public class User {
 public class Address {
     private String postCode;
     
-    public Address getPostCode() {
+    public String getPostCode() {
         return postCode;
     }
     
