@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/tosin-ogunrinde/cql-statement-builder.svg?branch=master)](https://travis-ci.org/tosin-ogunrinde/cql-statement-builder)
+[![Coverage Status](https://coveralls.io/repos/github/tosin-ogunrinde/cql-statement-builder/badge.svg?branch=master)](https://coveralls.io/github/tosin-ogunrinde/cql-statement-builder?branch=master)
 
 # CQL Statement Builder
 
