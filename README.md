@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/tosin-ogunrinde/cql-statement-builder.svg?branch=master)](https://travis-ci.org/tosin-ogunrinde/cql-statement-builder)
 
 # CQL Statement Builder
-___
 
 CQL Statement Builder is a Java library that automatically builds a range of CQL statements from classes. 
 The statements generated can then be **executed** in a preferred library or framework. CQL Statement Builder can generate CQL statements for the following CQL commands:
@@ -22,21 +21,18 @@ CQL Statement Builder can also generate the CQL statements required to create sc
 The schema generation feature is particularly useful because it will enable developers to focus on their models rather than worry about writing or re-writing CQL statements when a new class is created or when the structure of an old class changes.
 CQL Statement Builder makes use of the standard annotations provided by the [Datastax Java Driver for Apache Cassandra](http://docs.datastax.com/en/developer/java-driver/2.1/), except for one:
 
-1. @ClusteringColumnOrder: this annotation is used to indicate the order (i.e. Ascending or Descending) of the @ClusteringColumn. See User class example below.
+@ClusteringColumnOrder: this annotation is used to indicate the order (i.e. Ascending or Descending) of the @ClusteringColumn. See User class example below.
 
-## Usage
-___
-
-### CREATE KEYSPACE
+## CREATE KEYSPACE
 You can build CREATE KEYSPACE CQL statements with either SimpleStrategy or NetworkTopologyStrategy replication strategy.
 
-#### SimpleStrategy
+### SimpleStrategy
 The example below shows how to build a CREATE KEYSPACE CQL statement for a keyspace called foo with the replication_factor of 1.
 ```
 new CqlStatementBuildDirector().buildStatement(new CreateKeyspaceStatementBuilder(new SimpleStrategy("foo", 1)));
 ```
 
-#### NetworkTopologyStrategy
+### NetworkTopologyStrategy
 The example below shows how to build a CREATE KEYSPACE CQL statement for a keyspace called foo with two data centers.
 ```
 new CqlStatementBuildDirector().buildStatement(new CreateKeyspaceStatementBuilder(new NetworkTopologyStrategy("foo", getDataCenters())));
@@ -48,7 +44,7 @@ private Set<DataCenter> getDataCenters() {
 }
 ```
 
-### CREATE TABLE
+## CREATE TABLE
 The example below shows how to build a CREATE TABLE CQL statement from the User class. 
 
 ```
@@ -118,20 +114,20 @@ public class Address {
 new CqlStatementBuildDirector().buildStatement(new EntityStatementBuilderFactory(User.class).getEntityStatementBuilder());
 ```
 
-### CREATE TYPE
+## CREATE TYPE
 The example below shows how to build a CREATE TYPE CQL statement from the Address class above. 
 ```
 new CqlStatementBuildDirector().buildStatement(new EntityStatementBuilderFactory(Address.class).getEntityStatementBuilder());
 ```
 
-### DELETE
+## DELETE
 The example below shows how to build a DELETE CQL statement from the User class above. Multiple keys can also be specified if multiple partition keys 
 or clustering column are used. 
 ```
 new CqlStatementBuildDirector().buildStatement(new DeleteStatementBuilder(User.class, "foo"));
 ```
 
-### DROP
+## DROP
 CQL Statement Builder can build the following DROP CQL statements:
 
 1. DROP INDEX
@@ -144,27 +140,27 @@ The example below shows how to build a DROP CQL statement for a KEYSPACE called 
 new CqlStatementBuildDirector().buildStatement(new DropStatementBuilder(DroppableItem.KEYSPACE, "foo"));
 ```
 
-### SELECT *
+## SELECT *
 The example below shows how to build a SELECT * CQL statement from the User class above. 
 Multiple keys can also be specified if multiple partition keys or clustering column are used. 
 ```
 new CqlStatementBuildDirector().buildStatement(new SelectStatementBuilder(User.class, "foo"));
 ```
 
-### SELECT COUNT(*)
+## SELECT COUNT(*)
 The example below shows how to build a SELECT COUNT(*) CQL statement from the User class above. 
 ```
 new CqlStatementBuildDirector().buildStatement(new CountStatementBuilder(User.class, "foo"))
 ```
 
-### USE
+## USE
 The example below shows how to build a USE CQL statement for a keyspace called foo.
 
 ```
 new CqlStatementBuildDirector().buildStatement(new UseStatementBuilder("foo"));
 ```
 
-### SchemaStatementGenerator
+## SchemaStatementGenerator
 The SchemaStatementGenerator generates the list of CREATE TABLE and CREATE TYPE CQL statements from classes annotated with UDT and Table annotations.
 The example below shows how to generate the list of CQL statements where the classes are located in "com.foo.bar" package. 
 The list of statements can be used to setup the schema in Apache Cassandra.
