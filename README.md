@@ -17,7 +17,7 @@ The statements generated can then be **executed** in a preferred library or fram
 10. SELECT COUNT(*)
 11. USE
  
-CQL Statement Builder can also generate the CQL statements required to create schemas (See: SchemaStatementGenerator). 
+CQL Statement Builder can also generate the CQL statements required to create schemas. 
 The schema generation feature is particularly useful because it will enable developers to focus on their models rather than worry about writing or re-writing CQL statements when a new class is created or when the structure of an old class changes.
 CQL Statement Builder makes use of the standard annotations provided by the [Datastax Java Driver for Apache Cassandra](http://docs.datastax.com/en/developer/java-driver/2.1/), except for one:
 
