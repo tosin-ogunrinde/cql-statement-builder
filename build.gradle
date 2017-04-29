@@ -1,8 +1,26 @@
+buildscript {
+    ext {
+        coverallsVersion = '2.8.1'
+        coberturaVersion = '2.3.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.kt3k.gradle.plugin:coveralls-gradle-plugin:${coverallsVersion}")
+        classpath("net.saliman:gradle-cobertura-plugin:${coberturaVersion}")
+    }
+}
+
 group = 'com.tosinogunrinde.cql'
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'net.saliman.cobertura'
+
+cobertura.coverageFormats = ['html', 'xml']
 
 sourceCompatibility = 1.8
 
