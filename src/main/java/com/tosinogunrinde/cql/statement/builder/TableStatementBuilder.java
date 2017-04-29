@@ -77,13 +77,13 @@ public abstract class TableStatementBuilder implements CqlStatementBuilder {
     }
 
     private List<String> getKeyNames() {
-        List<String> keyName = new ArrayList<>();
+        List<String> keyNames = new ArrayList<>();
         for (Field field : entity.getDeclaredFields()) {
             if (field.getAnnotation(PartitionKey.class) != null || field.getAnnotation(ClusteringColumn.class) != null) {
-                keyName.add(AnnotationUtils.getFieldName(field));
+                keyNames.add(AnnotationUtils.getFieldName(field));
             }
         }
-        return keyName;
+        return keyNames;
     }
 
     protected abstract String getCqlCommand();
