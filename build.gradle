@@ -1,25 +1,8 @@
-buildscript {
-    ext {
-        sonarQubeGradleVersion = '2.2'
-        datastaxCassandraVersion = '2.1.9'
-        logbackVersion = '1.1.7'
-        powermockVersion = '1.7.0RC2'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:${sonarQubeGradleVersion}")
-    }
-}
-
 group = 'com.tosinogunrinde.cql'
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
-apply plugin: 'org.sonarqube'
-apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
 
@@ -27,6 +10,9 @@ repositories {
     mavenCentral()
 }
 
+def datastaxCassandraVersion = '2.1.9'
+def logbackVersion = '1.1.7'
+def powermockVersion = '1.7.0RC2'
 dependencies {
     compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
     compile group: 'com.datastax.cassandra', name: 'cassandra-driver-core', version: "${datastaxCassandraVersion}"
