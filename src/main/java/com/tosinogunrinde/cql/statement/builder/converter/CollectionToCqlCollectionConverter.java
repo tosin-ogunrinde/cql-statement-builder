@@ -58,9 +58,7 @@ abstract class CollectionToCqlCollectionConverter implements Converter<Field, St
                 builder.append(((Class) type).getSimpleName().toLowerCase());
             }
         } else {
-            builder.append("frozen<");
-            builder.append(getCollectionType(type));
-            builder.append("<");
+            builder.append("frozen<").append(getCollectionType(type)).append("<");
             Type[] types = getTypesFromType(type);
             for (int index = 0; index < types.length; index++) {
                 convert(types[index], index == 0 ? EntryType.KEY : EntryType.VALUE, true, builder);
