@@ -36,18 +36,14 @@ class ClusteringColumnStatementBuilder extends KeyStatementBuilder {
     @Override
     public void buildStatement() {
         super.buildStatement();
-        StringBuilder builder = new StringBuilder(super.getStatement());
-        boolean prefixAppended = false;
+        StringBuilder builder = new StringBuilder(super.getStatement())
+                .append(")) WITH CLUSTERING ORDER BY (");
         for (int index = 0; index < fields.size(); index++) {
-            ClusteringOrder clusteringOrder = fields.get(index).getAnnotation(ClusteringColumnOrder.class).clusteringOrder();
-            if (!prefixAppended) {
-                builder.append(")) WITH CLUSTERING ORDER BY (");
-            }
-            builder.append(fields.get(index).getName()).append(" ").append(clusteringOrder);
+            builder.append(fields.get(index).getName())
+                    .append(" ").append(fields.get(index).getAnnotation(ClusteringColumnOrder.class).clusteringOrder());
             if (index != fields.size() - 1) {
                 builder.append(", ");
             }
-            prefixAppended = true;
         }
         statement = builder.toString();
     }
