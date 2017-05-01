@@ -49,10 +49,8 @@ public final class SchemaStatementGenerator {
     public List<String> generateStatements() {
         List<String> statements = new ArrayList<>();
         Set<Class<?>> tableEntities = getClassesAnnotatedWith(Table.class);
-        if (tableEntities.isEmpty()) {
-            throw new IllegalArgumentException("@Table entity not found in basePackage");
-        }
-        createEntityTypesAnnotatedWith(tableEntities, statements, new HashSet<>());
+        CollectionValidator.validateNotNullOrEmpty(tableEntities, "@Table entity not found in basePackage");
+        generateStatementsForEntities(tableEntities, statements, new HashSet<>());
         return statements;
     }
 
@@ -60,44 +58,45 @@ public final class SchemaStatementGenerator {
         return new Reflections(basePackage).getTypesAnnotatedWith(classTypeAnnotation);
     }
 
-    private void createEntityTypesAnnotatedWith(Set<Class<?>> entities, List<String> statements, Set<String> processedEntities) {
+    private void generateStatementsForEntities(Set<Class<?>> entities, List<String> statements, Set<String> processedEntities) {
         for (Class entity : entities) {
             for (Field field : getFieldsAnnotatedWithFrozen(entity)) {
                 if (Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType())) {
-                    for (Type type : getTypesFromType(field.getGenericType())) {
-                        convert(type, statements, processedEntities);
-                    }
+                    generateStatementsForEntityCollectionTypes(getCollectionTypes(field.getGenericType()), statements, processedEntities);
                 } else if (field.getAnnotation(Frozen.class) != null) {
-                    createEntityTypesAnnotatedWith(Collections.singleton(field.getType()), statements, processedEntities);
+                    generateStatementsForEntities(Collections.singleton(field.getType()), statements, processedEntities);
                 }
             }
             addEntityStatement(entity, statements, processedEntities);
         }
     }
 
-    private Type[] getTypesFromType(Type type) {
-        return ((ParameterizedType) type).getActualTypeArguments();
-    }
-
-    private void convert(Type type, List<String> statements, Set<String> processedEntities) {
-        if (type instanceof Class) {
-            String cql = new TypeToCqlTypeConverter().convert(type.getTypeName());
-            if (Strings.isNullOrEmpty(cql) && !processedEntities.contains(type.getTypeName())) {
-                for (Field field : getFieldsAnnotatedWithFrozen((Class) type)) {
-                    convert(field.getGenericType(), statements, processedEntities);
-                }
-                addEntityStatement((Class) type, statements, processedEntities);
-            }
-        } else {
-            for (Type aType : getTypesFromType(type)) {
-                convert(aType, statements, processedEntities);
-            }
+    private void generateStatementsForEntityCollectionTypes(Type[] types, List<String> statements, Set<String> processedEntities) {
+        for (Type type : types) {
+            generateStatementsForEntityType(type, statements, processedEntities);
         }
     }
 
-    private void addEntityStatement(Class entity, List<String> statements, Set<String> processedEntities) {
-        statements.add(new CqlStatementBuildDirector().buildStatement(new EntityStatementBuilderFactory(entity).getEntityStatementBuilder()));
-        processedEntities.add(entity.getTypeName());
+    private void generateStatementsForEntityFields(List<Field> fields, List<String> statements, Set<String> processedEntities) {
+        for (Field field : fields) {
+            generateStatementsForEntityType(field.getGenericType(), statements, processedEntities);
+        }
+    }
+
+    private Type[] getCollectionTypes(Type type) {
+        return ((ParameterizedType) type).getActualTypeArguments();
+    }
+
+    private void generateStatementsForEntityType(Type type, List<String> statements, Set<String> processedEntities) {
+        if (type instanceof Class) {
+            String cql = new TypeToCqlTypeConverter().convert(type.getTypeName());
+            if (Strings.isNullOrEmpty(cql) && !processedEntities.contains(type.getTypeName())) {
+                generateStatementsForEntityFields(getFieldsAnnotatedWithFrozen((Class) type), statements, processedEntities);
+                addEntityStatement((Class) type, statements, processedEntities);
+            }
+        } else {
+            generateStatementsForEntityCollectionTypes(getCollectionTypes(type), statements, processedEntities);
+        }
     }
 
     private List<Field> getFieldsAnnotatedWithFrozen(Class entity) {
@@ -105,5 +104,10 @@ public final class SchemaStatementGenerator {
         annotations.add(Frozen.class);
         annotations.add(FrozenValue.class);
         return AnnotationUtils.getFieldsAnnotatedWith(entity, annotations);
+    }
+
+    private void addEntityStatement(Class entity, List<String> statements, Set<String> processedEntities) {
+        statements.add(new CqlStatementBuildDirector().buildStatement(new EntityStatementBuilderFactory(entity).getEntityStatementBuilder()));
+        processedEntities.add(entity.getTypeName());
     }
 }
