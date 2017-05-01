@@ -3,7 +3,7 @@
 
 # CQL Statement Builder
 
-CQL Statement Builder is a Java library that automatically builds a range of [CQL]((http://cassandra.apache.org/doc/latest/cql/)) statements from classes/models. 
+CQL Statement Builder is a Java library that automatically builds a range of [CQL](http://cassandra.apache.org/doc/latest/cql/) statements from classes/models. 
 The statements generated can then be **executed** in a preferred library or framework. CQL Statement Builder can generate CQL statements for the following commands:
 
 1. [CREATE KEYSPACE](http://docs.datastax.com/en/cql/3.3/cql/cql_reference/cqlCreateKeyspace.html)
