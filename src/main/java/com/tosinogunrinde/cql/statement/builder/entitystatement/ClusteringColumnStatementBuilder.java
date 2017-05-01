@@ -39,8 +39,9 @@ class ClusteringColumnStatementBuilder extends KeyStatementBuilder {
         StringBuilder builder = new StringBuilder(super.getStatement())
                 .append(")) WITH CLUSTERING ORDER BY (");
         for (int index = 0; index < fields.size(); index++) {
+            ClusteringOrder clusteringOrder = fields.get(index).getAnnotation(ClusteringColumnOrder.class).clusteringOrder();
             builder.append(fields.get(index).getName())
-                    .append(" ").append(fields.get(index).getAnnotation(ClusteringColumnOrder.class).clusteringOrder());
+                    .append(" ").append(clusteringOrder);
             if (index != fields.size() - 1) {
                 builder.append(", ");
             }
