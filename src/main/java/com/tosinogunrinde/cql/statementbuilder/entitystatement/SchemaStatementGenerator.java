@@ -107,6 +107,9 @@ public final class SchemaStatementGenerator {
     }
 
     private void addEntityStatement(Class entity, List<String> statements, Set<String> processedEntities) {
+        if (processedEntities.contains(entity.getTypeName())) {
+            return;
+        }
         statements.add(new CqlStatementBuildDirector().buildStatement(new EntityStatementBuilderFactory(entity).getEntityStatementBuilder()));
         processedEntities.add(entity.getTypeName());
     }
